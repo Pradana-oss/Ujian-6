@@ -1,0 +1,19 @@
+{
+  "name": "com.belajarnodejs",
+  "version": "1.0.0",
+  "description": "BelajarAja",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "mongoose": "^5.11.10",
+    "nodemon": "^2.0.6",
+    "querystring": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dewabrata",
+  "license": "ISC"
+}
