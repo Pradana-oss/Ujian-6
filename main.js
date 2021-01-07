@@ -62,42 +62,84 @@ res.status(404)
 
 })
 
-app.post('/movie/add',urlencodedParser, (req, res) =>{
+const postDataMovie = (req, res) =>{
 
-let {judul,rating,sinopsis} = req.body;
+    let {judul,rating,sinopsis} = req.body;
+    
+     
+        let addMovie = new Movie({
+            judul : judul,
+            rating : rating,
+            sipnosis : sinopsis
+          })
+          
+       addMovie.save().then (doc => {
+       
+        res.status(200).send("Berhasil memasukan data " + doc);
+       }).catch(err =>{
+        res.status(500).send("Gagal Insert Data "+err)
+       })
+     
+       
+    }
+    
+const getAllDataMovie = async(req, res) =>{
 
- 
-    let addMovie = new Movie({
-        judul : judul,
-        rating : rating,
-        sipnosis : sinopsis
-      })
-      
-   addMovie.save().then (doc => {
    
-    res.status(200).send("Berhasil memasukan data " + doc);
-   }).catch(err =>{
-    res.status(500).send("Gagal Insert Data "+err)
-   })
- 
+    let dataHasil = await Movie.find();
+    res.status(200).json(dataHasil);
+}
+
+const getAllDataMovieById = async(req, res) =>{
+
    
-})
-
-
-
-app.get('/movie/get/:judul',async(req, res) =>{
-
-    console.log("Ini Query " +req.query);
-    console.log("Ini Params" +req.params.judul)
-    let judul = req.params.judul;
+    let judul = req.params.id;
 
     let dataHasil = await Movie.find({judul: {$regex: judul, $options: 'i'}});
     res.status(200).json(dataHasil);
+}
 
-  
-  
+const updateDataMovieById = async(req, res) =>{
 
-})
+    console.log(req.body)
+    await Movie.findByIdAndUpdate(req.params.id,req.body,function (err, docs) { 
+     if (err){ 
+         console.log(err) 
+         res.status(400).json(err);
+     } 
+     else{ 
+         console.log("Updated User : ", docs); 
+         res.status(200).json(docs);
+     } })
+    
+ }
+ 
+ const deleteDataMovieById = async(req, res) =>{
+
+
+    await Movie.findByIdAndDelete(req.params.id,function (err, docs) { 
+     if (err){ 
+         console.log(err) 
+         res.status(400).json(err);
+     } 
+     else{ 
+         console.log("Deleted User : ", docs); 
+         res.status(200).json(docs);
+     } })
+    
+ }
+ 
+ 
+
+
+app.route('/movie')
+         .post(urlencodedParser,postDataMovie )
+         .get(getAllDataMovie);
+         
+app.route('/movie/:id').get(getAllDataMovieById)
+         .patch(urlencodedParser,updateDataMovieById)
+         .delete(deleteDataMovieById)
+
 
 
 app.listen(port,() => {
